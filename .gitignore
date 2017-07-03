@@ -1,0 +1,4 @@
+*.exe
+roms/*.z64
+patch
+armips_n64_wrapper.asm
