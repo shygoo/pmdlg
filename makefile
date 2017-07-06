@@ -10,32 +10,29 @@ pmdlg: src/pmdlg.c src/pmdlg.h src/n64rom.h
 #  "roms/Paper_Mario_(U)_[!].z64" required
 
 ROM_IN=roms/Paper_Mario_(U)_[!].z64
+ROM_IN_P=roms/Paper_Mario_(E)_(M4)_[!].z64
+
 PATCH_SRC_DIR=patch_src
 PATCH_DIR=patch
-PATCH=$(PATCH_DIR)/pm_dialog.asm
+PATCH=$(PATCH_DIR)/pm_dialog_main.asm
 PATCH_HEADER_FILE=pm_dialog_header.asm
 PATCH_ENCODE_FILE=pm_dialog_encoding.tbl
 PATCH_SRC_HEADER=$(PATCH_SRC_DIR)/$(PATCH_HEADER_FILE)
 PATCH_SRC_ENCODE=$(PATCH_SRC_DIR)/$(PATCH_ENCODE_FILE)
 PATCH_HEADER=$(PATCH_DIR)/$(PATCH_HEADER_FILE)
 PATCH_ENCODE=$(PATCH_DIR)/$(PATCH_ENCODE_FILE)
+PATCH_BANK_INCS=$(wildcard $(PATCH_DIR)/pm_dialog_bank_*.asm)
 
 # Generated ASM
-PATCH_DISASM_MAIN=$(PATCH_DIR)/pm_dialog.asm
-PATCH_DISASM_INCS=$(PATCH_DIR)/pm_dialog/*.*
+PATCH_DISASM_MAIN=$(PATCH_DIR)/pm_dialog_main.asm
+PATCH_DISASM_INCS=$(PATCH_DIR)/pm_dialog_sections/*.*
 
 # Handwritten ASM header and character table
 PATCH_INCS=$(PATCH_HEADER) $(PATCH_ENCODE)
 
 # All patch files
-PATCH=$(PATCH_DISASM_MAIN) $(PATCH_DISASM_INCS) $(PATCH_INCS)
+PATCH=$(PATCH_DISASM_MAIN) $(PATCH_DISASM_INCS) $(PATCH_INCS) $(PATCH_BANK_INCS)
 
-.PHONY: newpatch
-newpatch: $(PATCH)
-
-$(PATCH_DISASM_MAIN): pmdlg $(ROM_IN) | $(PATCH_DIR)
-	./pmdlg "$(ROM_IN)" $(PATCH_DIR)
-	
 $(PATCH_DISASM_INCS):
 # assume we have it
 
@@ -48,6 +45,12 @@ $(PATCH_ENCODE): $(PATCH_SRC_ENCODE) | $(PATCH_DIR)
 $(PATCH_DIR):
 	mkdir $@
 	
+.PHONY: newpatch
+newpatch: $(PATCH)
+
+$(PATCH_DISASM_MAIN): pmdlg $(ROM_IN) | $(PATCH_DIR)
+	./pmdlg "$(ROM_IN)" $(PATCH_DIR)
+	
 ##########
 # make rom
 #  Generates a modified ROM with armips
@@ -55,6 +58,7 @@ $(PATCH_DIR):
 
 N64_WRAP=armips_n64_wrapper.asm
 ROM_OUT=roms/Paper_Mario_(U)_[!].mod.z64
+ROM_OUT_P=roms/Paper_Mario_(E)_(M4)_[!].mod.z64
 
 .PHONY: rom
 rom: $(ROM_OUT)

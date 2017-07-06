@@ -64,6 +64,7 @@ const pm_dlg_element_t* pm_dlg_get_special_char(uint8_t chr)
 		{ CHR_LINE_BREAK,   "CHR_LINE_BREAK",   0, NULL },
 		{ CHR_BELL,         "CHR_BELL",         0, NULL },
 		{ CHR_DELAY,        "CHR_DELAY",        1, NULL },
+		{ CHR_UNK_F3,       "CHR_UNK_F3",       0, NULL },
 		{ CHR_NEXT_BUBBLE,  "CHR_NEXT_BUBBLE",  0, NULL },
 		{ CHR_STYLE,        "CHR_STYLE",        1, pm_decode_chr_style_args },
 		{ CHR_END,          "CHR_END",          0, NULL },
@@ -284,7 +285,65 @@ void pm_decode_chr_style_args(n64rom_t* rom)
 
 /////////
 
-char pm_dlg_char_to_ascii(unsigned char c)
+const char* pm_dlg_char_to_utf8(unsigned char c)
+{
+	switch(c)
+	{
+		case 0x5F: return "\xC2\xB0"; // Â°
+		case 0x60: return "\xC3\x80"; // Ã€
+		case 0x61: return "\xC3\x81"; // Ã
+		case 0x62: return "\xC3\x82"; // Ã‚
+		case 0x63: return "\xC3\x84"; // Ã„
+		case 0x64: return "\xC3\x87"; // Ã‡
+		case 0x65: return "\xC3\x88"; // Ãˆ
+		case 0x66: return "\xC3\x89"; // Ã‰
+		case 0x67: return "\xC3\x8A"; // ÃŠ
+		case 0x68: return "\xC3\x8B"; // Ã‹
+		case 0x69: return "\xC3\x8C"; // ÃŒ
+		case 0x6A: return "\xC3\x8D"; // Ã
+		case 0x6B: return "\xC3\x8E"; // ÃŽ
+		case 0x6C: return "\xC3\x8F"; // Ã
+		case 0x6D: return "\xC3\x91"; // Ã‘
+		case 0x6E: return "\xC3\x92"; // Ã’
+		case 0x6F: return "\xC3\x93"; // Ã“
+		case 0x70: return "\xC3\x94"; // Ã”
+		case 0x71: return "\xC3\x96"; // Ã–
+		case 0x72: return "\xC3\x99"; // Ã™
+		case 0x73: return "\xC3\x9A"; // Ãš
+		case 0x74: return "\xC3\x9B"; // Ã›
+		case 0x75: return "\xC3\x9C"; // Ãœ
+		case 0x76: return "\xC3\x9F"; // ÃŸ
+		case 0x77: return "\xC3\xA0"; // Ã 
+		case 0x78: return "\xC3\xA1"; // Ã¡
+		case 0x79: return "\xC3\xA2"; // Ã¢
+		case 0x7A: return "\xC3\xA4"; // Ã¤
+		case 0x7B: return "\xC3\xA7"; // Ã§
+		case 0x7C: return "\xC3\xA8"; // Ã¨
+		case 0x7D: return "\xC3\xA9"; // Ã©
+		case 0x7E: return "\xC3\xAA"; // Ãª
+		case 0x7F: return "\xC3\xAB"; // Ã«
+		case 0x80: return "\xC3\xAC"; // Ã¬
+		case 0x81: return "\xC3\xAD"; // Ã­
+		case 0x82: return "\xC3\xAE"; // Ã®
+		case 0x83: return "\xC3\xAF"; // Ã¯
+		case 0x84: return "\xC3\xB1"; // Ã±
+		case 0x85: return "\xC3\xB2"; // Ã²
+		case 0x86: return "\xC3\xB3"; // Ã³
+		case 0x87: return "\xC3\xB4"; // Ã´
+		case 0x88: return "\xC3\xB6"; // Ã¶
+		case 0x89: return "\xC3\xB9"; // Ã¹
+		case 0x8A: return "\xC3\xBA"; // Ãº
+		case 0x8B: return "\xC3\xBB"; // Ã»
+		case 0x8C: return "\xC3\xBC"; // Ã¼
+		case 0x8D: return "\xC2\xA1"; // Â¡
+		case 0x8E: return "\xC2\xBF"; // Â¿
+		case 0x8F: return "\xC2\xAA"; // Âª
+	}
+	
+	return NULL;
+}
+
+char pm_dlg_char_to_asc(unsigned char c)
 {
 	if(c >= 0x01 && c <= 0x5E)
 	{
@@ -292,61 +351,19 @@ char pm_dlg_char_to_ascii(unsigned char c)
 		return c;
 	}
 	
-	switch(c)
+	if(c == 0xF7)
 	{
-		case 0x5F: return '°';
-		case 0x60: return 'À';
-		case 0x61: return 'Á';
-		case 0x62: return 'Â';
-		case 0x63: return 'Ä';
-		case 0x64: return 'Ç';
-		case 0x65: return 'È';
-		case 0x66: return 'É';
-		case 0x67: return 'Ê';
-		case 0x68: return 'Ë';
-		case 0x69: return 'Ì';
-		case 0x6A: return 'Í';
-		case 0x6B: return 'Î';
-		case 0x6C: return 'Ï';
-		case 0x6D: return 'Ñ';
-		case 0x6E: return 'Ò';
-		case 0x6F: return 'Ó';
-		case 0x70: return 'Ô';
-		case 0x71: return 'Ö';
-		case 0x72: return 'Ù';
-		case 0x73: return 'Ú';
-		case 0x74: return 'Û';
-		case 0x75: return 'Ü';
-		case 0x76: return 'ß';
-		case 0x77: return 'à';
-		case 0x78: return 'á';
-		case 0x79: return 'â';
-		case 0x7A: return 'ä';
-		case 0x7B: return 'ç';
-		case 0x7C: return 'è';
-		case 0x7D: return 'é';
-		case 0x7E: return 'ê';
-		case 0x7F: return 'ë';
-		case 0x80: return 'ì';
-		case 0x81: return 'í';
-		case 0x82: return 'î';
-		case 0x83: return 'ï';
-		case 0x84: return 'ñ';
-		case 0x85: return 'ò';
-		case 0x86: return 'ó';
-		case 0x87: return 'ô';
-		case 0x88: return 'ö';
-		case 0x89: return 'ù';
-		case 0x8A: return 'ú';
-		case 0x8B: return 'û';
-		case 0x8C: return 'ü';
-		case 0x8D: return '¡';
-		case 0x8E: return '¿';
-		case 0x8F: return 'ª';
-		case 0xF7: return ' ';
+		return ' ';
 	}
 	
-	return SPECIAL_CHAR; // unhandled, must use pm_dlg_char_to_ascii_special
+	if(c >= 0x5F && c <= 0x8F)
+	{
+		// unhandled, need to fallback to pm_dlg_char_to_utf8
+		return CVT_UNHANDLED_USE_UTF8;
+	}
+	
+	// unhandled, must fallback to pm_dlg_char_to_asc_special
+	return CVT_UNHANDLED_SPECIAL;
 }
 
 // decode until CHR_END is met
@@ -358,7 +375,7 @@ void pm_dlg_decode_sequence(n64rom_t* rom)
 	while(true)
 	{
 		uint8_t chr = n64rom_stream_read_u8(rom);
-		char chr_asc = pm_dlg_char_to_ascii(chr);
+		char chr_asc = pm_dlg_char_to_asc(chr);
 		
 		if(after_element)
 		{
@@ -366,10 +383,10 @@ void pm_dlg_decode_sequence(n64rom_t* rom)
 			after_element = false;
 		}
 		
-		if(chr_asc != SPECIAL_CHAR)
+		if(chr_asc != CVT_UNHANDLED_SPECIAL)
 		{
-			// Regular character
-		
+			// Normal string character
+			
 			if(!in_quotes)
 			{
 				// Start new quoted string
@@ -378,6 +395,23 @@ void pm_dlg_decode_sequence(n64rom_t* rom)
 			}
 			
 			// Add character to quoted string
+			
+			if(chr_asc == CVT_UNHANDLED_USE_UTF8)
+			{
+				const char* pchr_utf8 = pm_dlg_char_to_utf8(chr);
+				
+				if(pchr_utf8 == NULL)
+				{
+					pm_dlg_output("[%02X]", chr);
+				}
+				else
+				{
+					pm_dlg_output("%s", pchr_utf8);
+				}
+				
+				continue;
+			}
+			
 			if(chr_asc == '"')
 			{
 				pm_dlg_output("\\\"");
@@ -454,10 +488,12 @@ void pm_dlg_decode_sequence(n64rom_t* rom)
 	}
 }
 
-int pm_dlg_decode_section(n64rom_t* rom, int bank_pos, int section_num)
+int pm_dlg_decode_section(n64rom_t* rom, const pm_dlg_bank_info_t* bank_info, int section_num)
 {
+	int bank_pos = bank_info->pos;
+
 	char output_path[PATH_MAX];
-	sprintf(output_path, "pm_dialog/dlg_%02X.asm", section_num);
+	sprintf(output_path, "pm_dialog_sections/dlg_%s_%02X.asm", bank_info->prefix, section_num);
 	pm_dlg_open_output(output_path);
 	
 	pm_dlg_output_auto_msg();
@@ -469,7 +505,7 @@ int pm_dlg_decode_section(n64rom_t* rom, int bank_pos, int section_num)
 		return 0;
 	}
 	
-	pm_dlg_output("; Dialog Section %02X:\r\n\r\n", section_num);
+	pm_dlg_output("; Dialog Section %s_%02X:\r\n\r\n", bank_info->prefix, section_num);
 	
 	int section_pos = bank_pos + section_offset;
 	int section_end_pos = 0;
@@ -488,7 +524,7 @@ int pm_dlg_decode_section(n64rom_t* rom, int bank_pos, int section_num)
 			break;
 		}
 		
-		pm_dlg_output("dlg_%02X_%04X:\r\n", section_num, string_num);
+		pm_dlg_output("dlg_%s_%02X_%04X:\r\n", bank_info->prefix, section_num, string_num);
 		
 		int string_pos = bank_pos + string_offset;
 		
@@ -510,7 +546,7 @@ int pm_dlg_decode_section(n64rom_t* rom, int bank_pos, int section_num)
 	// Output string offset list
 	
 	pm_dlg_output(".align 4\r\n\r\n");
-	pm_dlg_output("dlg_%02X:\r\n", section_num);
+	pm_dlg_output("dlg_%s_%02X:\r\n", bank_info->prefix, section_num);
 	
 	for(int i = 0;; i++)
 	{
@@ -522,7 +558,7 @@ int pm_dlg_decode_section(n64rom_t* rom, int bank_pos, int section_num)
 			pm_dlg_output(".dw ");
 		}
 		
-		pm_dlg_output("dlg_%02X_%04X", section_num, i);
+		pm_dlg_output("dlg_%s_%02X_%04X", bank_info->prefix, section_num, i);
 		
 		if((i+1)%8 == 0)
 		{
@@ -539,7 +575,7 @@ int pm_dlg_decode_section(n64rom_t* rom, int bank_pos, int section_num)
 			{
 				pm_dlg_output(".dw ");
 			}
-			pm_dlg_output("dlg_%02X", section_num);
+			pm_dlg_output("dlg_%s_%02X", bank_info->prefix, section_num);
 			break;
 		}
 	}
@@ -552,38 +588,52 @@ int pm_dlg_decode_section(n64rom_t* rom, int bank_pos, int section_num)
 	return section_end_pos;
 }
 
-void pm_decode_dialog(n64rom_t* rom)
+const pm_dlg_bank_info_t* pm_dlg_get_bank_info(n64rom_t* rom)
 {
-	int bank_pos;
-	
 	char country_code = n64rom_get_country_code(rom);
+	
+	static const pm_dlg_bank_info_t pm_dlg_banks_e[] = {
+		{ "en", "EN", PM_DLG_BANK_POS_E_EN },
+		{ NULL, 0 }
+	};
+	
+	static const pm_dlg_bank_info_t pm_dlg_banks_j[] = {
+		{ "jp", "JP", PM_DLG_BANK_POS_J_JP },
+		{ NULL, 0 }
+	};
+	
+	static const pm_dlg_bank_info_t pm_dlg_banks_p[] = {
+		{ "en", "EN", PM_DLG_BANK_POS_P_EN },
+		{ "de", "DE", PM_DLG_BANK_POS_P_DE },
+		{ "fr", "FR", PM_DLG_BANK_POS_P_FR },
+		{ "es", "ES", PM_DLG_BANK_POS_P_ES },
+		{ NULL, 0 }
+	};
 	
 	switch(country_code)
 	{
 		case 'J':
-			bank_pos = 0x01D40000;
-			break;
+			return pm_dlg_banks_j;
 		case 'P':
-			bank_pos = 0x021B0000;
-			// 02030000 en
-			// 021B0000 de
-			// 02330000 fr
-			// 024B0000 es
-			break;
+			return pm_dlg_banks_p;
 		default:
 		case 'E':
-			bank_pos = 0x01B83000;
-			break;
+			return pm_dlg_banks_e;
 	}
-	
-	// Decode all sections
+}
+
+void pm_dlg_decode_bank(n64rom_t* rom, const pm_dlg_bank_info_t* bank_info)
+{
+	int bank_pos = bank_info->pos;
+
+	// Decode all sections in a bank
 	
 	int section_num = 0;
 	int bank_end_pos = 0;
 	
 	while(1)
 	{
-		int end_pos = pm_dlg_decode_section(rom, bank_pos, section_num);
+		int end_pos = pm_dlg_decode_section(rom, bank_info, section_num);
 		
 		if(end_pos == 0)
 		{
@@ -596,20 +646,21 @@ void pm_decode_dialog(n64rom_t* rom)
 	
 	int bank_size = bank_end_pos - bank_pos;
 	
-	// Output main file
+	// Output bank file
 	
-	pm_dlg_open_output("pm_dialog.asm");
+	char bank_asm_file_name[PATH_MAX];
+	sprintf(bank_asm_file_name, "pm_dialog_bank_%s.asm", bank_info->prefix);
+	
+	pm_dlg_open_output(bank_asm_file_name);
 	
 	pm_dlg_output_auto_msg();
 	
-	pm_dlg_output(".include \"pm_dialog_header.asm\"\r\n\r\n");
+	pm_dlg_output(".definelabel DIALOG_BANK_%s_POS,  0x%08X\r\n", bank_info->prefix_u, bank_pos);
+	pm_dlg_output(".definelabel DIALOG_BANK_%s_SIZE, 0x%08X\r\n\r\n", bank_info->prefix_u, bank_size);
 	
-	pm_dlg_output(".definelabel DIALOG_BANK_POS,  0x%08X\r\n", bank_pos);
-	pm_dlg_output(".definelabel DIALOG_BANK_SIZE, 0x%08X\r\n\r\n", bank_size);
-	
-	pm_dlg_output(".orga DIALOG_BANK_POS\r\n");
-	pm_dlg_output(".headersize -DIALOG_BANK_POS\r\n", bank_pos);
-	pm_dlg_output(".area DIALOG_BANK_SIZE, 0\r\n\r\n", bank_size);
+	pm_dlg_output(".orga DIALOG_BANK_%s_POS\r\n", bank_info->prefix_u);
+	pm_dlg_output(".headersize -DIALOG_BANK_%s_POS\r\n", bank_info->prefix_u, bank_pos);
+	pm_dlg_output(".area DIALOG_BANK_%s_SIZE, 0\r\n\r\n", bank_info->prefix_u, bank_size);
 	
 	// Output labels
 	// These point to each section's sequence offset list
@@ -634,7 +685,7 @@ void pm_decode_dialog(n64rom_t* rom)
 		}
 		else
 		{
-			pm_dlg_output("dlg_%02X", i);
+			pm_dlg_output("dlg_%s_%02X", bank_info->prefix, i);
 		}
 		
 		if((i+1)%8 == 0)
@@ -654,11 +705,39 @@ void pm_decode_dialog(n64rom_t* rom)
 			break;
 		}
 		
-		pm_dlg_output(".include \"pm_dialog/dlg_%02X.asm\"\r\n", i);
+		pm_dlg_output(".include \"pm_dialog_sections/dlg_%s_%02X.asm\"\r\n", bank_info->prefix, i);
 	}
 	pm_dlg_output("\r\n");
 	
 	pm_dlg_output(".endarea\r\n");
+	
+	pm_dlg_close_output();
+}
+
+void pm_decode_dialog(n64rom_t* rom)
+{
+	char country_code = n64rom_get_country_code(rom);
+	
+	const pm_dlg_bank_info_t* banks = pm_dlg_get_bank_info(rom);
+	
+	printf("Country code %c\n", country_code);
+	
+	for(int i = 0; banks[i].prefix != NULL; i++)
+	{
+		pm_dlg_decode_bank(rom, &banks[i]);
+	}
+	
+	// Output main file
+	
+	pm_dlg_open_output("pm_dialog_main.asm");
+	
+	pm_dlg_output_auto_msg();
+	pm_dlg_output(".include \"pm_dialog_header.asm\"\r\n\r\n");
+	
+	for(int i = 0; banks[i].prefix != NULL; i++)
+	{
+		pm_dlg_output(".include \"pm_dialog_bank_%s.asm\"\r\n", banks[i].prefix);
+	}
 	
 	pm_dlg_close_output();
 }
@@ -688,7 +767,7 @@ void pm_dlg_output(const char* format, ...)
 void pm_dlg_output_auto_msg()
 {
 	pm_dlg_output(
-		"; Paper Mario Dialog Disassembly v0.1\r\n"
+		"; Paper Mario Dialog Disassembly v0.3\r\n"
 		"; Generated with pmdlg (https://github.com/shygoo/pmdlg)\r\n"
 		"; Compatible with armips (https://github.com/Kingcom/armips)\r\n\r\n"
 	);
@@ -697,9 +776,9 @@ void pm_dlg_output_auto_msg()
 void pm_dlg_make_asm_dir()
 {
 	#ifdef _WIN32
-	mkdir("pm_dialog");
+	mkdir("pm_dialog_sections");
 	#else
-	mkdir("pm_dialog", 0777);
+	mkdir("pm_dialog_sections", 0777);
 	#endif
 }
 
@@ -717,7 +796,7 @@ int main(int argc, const char* argv[])
 	n64rom_t* rom = n64rom_create(rom_path);
 	
 	chdir(out_dir);
-	mkdir("pm_dialog");
+	mkdir("pm_dialog_sections");
 	
 	pm_decode_dialog(rom);
 	

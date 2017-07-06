@@ -1,4 +1,4 @@
-; Paper Mario Dialog Disassembly Header v0.1
+; Paper Mario Dialog Disassembly Header v0.3
 ; Compatible with armips (https://github.com/Kingcom/armips)
 
 ; CONFIG_SHRINK:
@@ -41,6 +41,7 @@
 .definelabel CHR_LINE_BREAK,            0xF0
 .definelabel CHR_BELL,                  0xF1
 .definelabel CHR_DELAY,                 0xF2
+.definelabel CHR_UNK_F3,                0xF3
 .definelabel CHR_NEXT_BUBBLE,           0xFB
 .definelabel CHR_STYLE,                 0xFC
 .definelabel CHR_END,                   0xFD

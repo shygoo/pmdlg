@@ -50,6 +50,7 @@
 #define CHR_LINE_BREAK            0xF0
 #define CHR_BELL                  0xF1
 #define CHR_DELAY                 0xF2
+#define CHR_UNK_F3                0xF3
 #define CHR_NEXT_BUBBLE           0xFB
 #define CHR_STYLE                 0xFC
 #define CHR_END                   0xFD
@@ -127,7 +128,15 @@
 #define CMD_VOLUME                0x2E
 #define CMD_VOICE                 0x2F
 
-#define SPECIAL_CHAR (-1)
+#define PM_DLG_BANK_POS_E_EN 0x01B83000
+#define PM_DLG_BANK_POS_J_JP 0x01D40000
+#define PM_DLG_BANK_POS_P_EN 0x02030000
+#define PM_DLG_BANK_POS_P_DE 0x021B0000
+#define PM_DLG_BANK_POS_P_FR 0x02330000
+#define PM_DLG_BANK_POS_P_ES 0x024B0000
+
+#define CVT_UNHANDLED_SPECIAL  (-1)
+#define CVT_UNHANDLED_USE_UTF8 (-2)
 
 struct _pm_dlg_element;
 
@@ -140,7 +149,16 @@ typedef struct _pm_dlg_element {
 	pm_dlg_arg_decoder_t decode_args;
 } pm_dlg_element_t;
 
+typedef struct {
+	const char* prefix;
+	const char* prefix_u;
+	uint32_t pos;
+} pm_dlg_bank_info_t;
+
 void pm_decode_dialog(n64rom_t* rom);
+void pm_dlg_decode_bank(n64rom_t* rom, const pm_dlg_bank_info_t* bank_info);
+
+const pm_dlg_bank_info_t* pm_dlg_get_bank_info(n64rom_t* rom);
 
 const pm_dlg_element_t* pm_map_get(const pm_dlg_element_t* map, uint8_t value);
 const pm_dlg_element_t* pm_dlg_get_special_char(uint8_t chr);
@@ -148,18 +166,14 @@ const pm_dlg_element_t* pm_dlg_get_style(uint8_t style_id);
 const pm_dlg_element_t* pm_dlg_get_command(uint8_t command_id);
 const pm_dlg_element_t* pm_dlg_get_effect(uint8_t effect_id);
 
-char pm_dlg_char_to_ascii(uint8_t c);
+char pm_dlg_char_to_asc(uint8_t c);
 void pm_dlg_decode_sequence(n64rom_t* rom);
-int pm_dlg_decode_section(n64rom_t* rom, int bank_pos, int section_num);
+int pm_dlg_decode_section(n64rom_t* rom, const pm_dlg_bank_info_t* bank_info, int section_num);
 
 void pm_decode_cmd_00_args(n64rom_t* rom);
 void pm_decode_cmd_effect_args(n64rom_t* rom);
 void pm_decode_chr_cmd_args(n64rom_t* rom);
 void pm_decode_chr_style_args(n64rom_t* rom);
-
-// const int* pm_dlg_bank_list_e();
-// const int* pm_dlg_bank_list_j();
-// const int* pm_dlg_bank_list_p();
 
 void pm_dlg_open_output(const char* path);
 void pm_dlg_close_output();
