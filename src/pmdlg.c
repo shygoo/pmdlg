@@ -609,9 +609,7 @@ void pm_decode_dialog(n64rom_t* rom)
 	
 	pm_dlg_output(".orga DIALOG_BANK_POS\r\n");
 	pm_dlg_output(".headersize -DIALOG_BANK_POS\r\n", bank_pos);
-	pm_dlg_output(".fill DIALOG_BANK_SIZE, 0\r\n", bank_size); 
-	pm_dlg_output(".org 0\r\n");
-	pm_dlg_output(".area DIALOG_BANK_SIZE\r\n\r\n", bank_size);
+	pm_dlg_output(".area DIALOG_BANK_SIZE, 0\r\n\r\n", bank_size);
 	
 	// Output labels
 	// These point to each section's sequence offset list
