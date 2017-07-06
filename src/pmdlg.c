@@ -362,7 +362,7 @@ void pm_dlg_decode_sequence(n64rom_t* rom)
 		
 		if(after_element)
 		{
-			pm_dlg_output("\n");
+			pm_dlg_output("\r\n");
 			after_element = false;
 		}
 		
@@ -404,7 +404,7 @@ void pm_dlg_decode_sequence(n64rom_t* rom)
 			}
 			else
 			{
-				pm_dlg_output("\"\n");
+				pm_dlg_output("\"\r\n");
 			}
 		}
 		
@@ -420,7 +420,7 @@ void pm_dlg_decode_sequence(n64rom_t* rom)
 		
 		if(special == NULL)
 		{
-			pm_dlg_output("Unhandled special character\n");
+			pm_dlg_output("Unhandled special character\r\n");
 			exit(EXIT_FAILURE);
 		}
 		
@@ -469,7 +469,7 @@ int pm_dlg_decode_section(n64rom_t* rom, int bank_pos, int section_num)
 		return 0;
 	}
 	
-	pm_dlg_output("; Dialog Section %02X:\n\n", section_num);
+	pm_dlg_output("; Dialog Section %02X:\r\n\r\n", section_num);
 	
 	int section_pos = bank_pos + section_offset;
 	int section_end_pos = 0;
@@ -488,7 +488,7 @@ int pm_dlg_decode_section(n64rom_t* rom, int bank_pos, int section_num)
 			break;
 		}
 		
-		pm_dlg_output("dlg_%02X_%04X:\n", section_num, string_num);
+		pm_dlg_output("dlg_%02X_%04X:\r\n", section_num, string_num);
 		
 		int string_pos = bank_pos + string_offset;
 		
@@ -496,7 +496,7 @@ int pm_dlg_decode_section(n64rom_t* rom, int bank_pos, int section_num)
 		
 		pm_dlg_decode_sequence(rom);
 		
-		pm_dlg_output("\n\n");
+		pm_dlg_output("\r\n\r\n");
 		
 		if(string_end_offset == section_offset)
 		{
@@ -509,8 +509,8 @@ int pm_dlg_decode_section(n64rom_t* rom, int bank_pos, int section_num)
 	
 	// Output string offset list
 	
-	pm_dlg_output(".align 4\n\n");
-	pm_dlg_output("dlg_%02X:\n", section_num);
+	pm_dlg_output(".align 4\r\n\r\n");
+	pm_dlg_output("dlg_%02X:\r\n", section_num);
 	
 	for(int i = 0;; i++)
 	{
@@ -526,7 +526,7 @@ int pm_dlg_decode_section(n64rom_t* rom, int bank_pos, int section_num)
 		
 		if((i+1)%8 == 0)
 		{
-			pm_dlg_output("\n");
+			pm_dlg_output("\r\n");
 		}
 		else
 		{
@@ -544,8 +544,8 @@ int pm_dlg_decode_section(n64rom_t* rom, int bank_pos, int section_num)
 		}
 	}
 	
-	pm_dlg_output("\n\n");
-	pm_dlg_output("end_dlg_section\n");
+	pm_dlg_output("\r\n\r\n");
+	pm_dlg_output("end_dlg_section\r\n");
 	
 	pm_dlg_close_output();
 	
@@ -602,16 +602,16 @@ void pm_decode_dialog(n64rom_t* rom)
 	
 	pm_dlg_output_auto_msg();
 	
-	pm_dlg_output(".include \"pm_dialog_header.asm\"\n\n");
+	pm_dlg_output(".include \"pm_dialog_header.asm\"\r\n\r\n");
 	
-	pm_dlg_output(".definelabel DIALOG_BANK_POS,  0x%08X\n", bank_pos);
-	pm_dlg_output(".definelabel DIALOG_BANK_SIZE, 0x%08X\n\n", bank_size);
+	pm_dlg_output(".definelabel DIALOG_BANK_POS,  0x%08X\r\n", bank_pos);
+	pm_dlg_output(".definelabel DIALOG_BANK_SIZE, 0x%08X\r\n\r\n", bank_size);
 	
-	pm_dlg_output(".orga DIALOG_BANK_POS\n");
-	pm_dlg_output(".headersize -DIALOG_BANK_POS\n", bank_pos);
-	pm_dlg_output(".fill DIALOG_BANK_SIZE, 0\n", bank_size); 
-	pm_dlg_output(".org 0\n");
-	pm_dlg_output(".area DIALOG_BANK_SIZE\n\n", bank_size);
+	pm_dlg_output(".orga DIALOG_BANK_POS\r\n");
+	pm_dlg_output(".headersize -DIALOG_BANK_POS\r\n", bank_pos);
+	pm_dlg_output(".fill DIALOG_BANK_SIZE, 0\r\n", bank_size); 
+	pm_dlg_output(".org 0\r\n");
+	pm_dlg_output(".area DIALOG_BANK_SIZE\r\n\r\n", bank_size);
 	
 	// Output labels
 	// These point to each section's sequence offset list
@@ -631,7 +631,7 @@ void pm_decode_dialog(n64rom_t* rom)
 		
 		if(section_offset == 0)
 		{
-			pm_dlg_output("0\n");
+			pm_dlg_output("0\r\n");
 			break;
 		}
 		else
@@ -641,11 +641,11 @@ void pm_decode_dialog(n64rom_t* rom)
 		
 		if((i+1)%8 == 0)
 		{
-			pm_dlg_output("\n");
+			pm_dlg_output("\r\n");
 		}
 		
 	}
-	pm_dlg_output("\n");
+	pm_dlg_output("\r\n");
 	
 	for(int i = 0;; i++)
 	{
@@ -656,11 +656,11 @@ void pm_decode_dialog(n64rom_t* rom)
 			break;
 		}
 		
-		pm_dlg_output(".include \"pm_dialog/dlg_%02X.asm\"\n", i);
+		pm_dlg_output(".include \"pm_dialog/dlg_%02X.asm\"\r\n", i);
 	}
-	pm_dlg_output("\n");
+	pm_dlg_output("\r\n");
 	
-	pm_dlg_output(".endarea\n");
+	pm_dlg_output(".endarea\r\n");
 	
 	pm_dlg_close_output();
 }
@@ -690,9 +690,9 @@ void pm_dlg_output(const char* format, ...)
 void pm_dlg_output_auto_msg()
 {
 	pm_dlg_output(
-		"; Paper Mario Dialog Disassembly v0.1\n"
-		"; Generated with pmdlg (https://github.com/shygoo/pmdlg)\n"
-		"; Compatible with armips (https://github.com/Kingcom/armips)\n\n"
+		"; Paper Mario Dialog Disassembly v0.1\r\n"
+		"; Generated with pmdlg (https://github.com/shygoo/pmdlg)\r\n"
+		"; Compatible with armips (https://github.com/Kingcom/armips)\r\n\r\n"
 	);
 }
 
