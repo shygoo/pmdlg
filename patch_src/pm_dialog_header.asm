@@ -1,4 +1,4 @@
-; Paper Mario Dialog Disassembly Header v0.3
+; Paper Mario Dialog Disassembly Header v0.4
 ; Compatible with armips (https://github.com/Kingcom/armips)
 
 ; CONFIG_SHRINK:
@@ -130,11 +130,15 @@
 	.db CHR_END
 	.if (CONFIG_SHRINK == 0)
 		.align 4
+	.else
+		.align 2
 	.endif
 .endmacro
 
 .macro end_dlg_section
 	.if (CONFIG_SHRINK == 0)
 		.align 16
+	.else
+		.align 2
 	.endif
 .endmacro
