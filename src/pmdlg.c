@@ -492,18 +492,18 @@ int pm_dlg_decode_section(n64rom_t* rom, const pm_dlg_bank_info_t* bank_info, in
 {
 	int bank_pos = bank_info->pos;
 
-	char output_path[PATH_MAX];
-	sprintf(output_path, "pm_dialog_sections/dlg_%s_%02X.asm", bank_info->prefix, section_num);
-	pm_dlg_open_output(output_path);
-	
-	pm_dlg_output_auto_msg();
-	
 	uint32_t section_offset = n64rom_get_u32(rom, bank_pos + section_num * sizeof(uint32_t));
 	
 	if(section_offset == 0)
 	{
 		return 0;
 	}
+
+	char output_path[PATH_MAX];
+	sprintf(output_path, "pm_dialog_sections/dlg_%s_%02X.asm", bank_info->prefix, section_num);
+	pm_dlg_open_output(output_path);
+	
+	pm_dlg_output_auto_msg();
 	
 	pm_dlg_output("; Dialog Section %s_%02X:\r\n\r\n", bank_info->prefix, section_num);
 	
